@@ -1,0 +1,29 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9093 #Defualt port :9092
+    consumer:
+      group-id: product-consumer-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testdb
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+    platform: postgresql
+    initialize: false
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  cache:
+    type: redis
+    redis:
+      host: localhost
+      port: 6379
