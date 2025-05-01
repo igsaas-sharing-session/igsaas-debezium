@@ -1,4 +1,4 @@
-# Debezium with PostgreSQL and Spring Boot
+# Debezium with PostgreSQL Redis and Spring Boot
 
 This project demonstrates how to set up **Change Data Capture (CDC)** with **Debezium** to capture changes in a PostgreSQL database and consume these changes in a Spring Boot application. The captured changes are then stored in **Redis** for quick access.
 
@@ -28,14 +28,29 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
 
+  demo-debezium-kafdrop:
+    image: obsidiandynamics/kafdrop
+    container_name: demo-debezium-kafdrop
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: demo-debezium-kafka:9092
+    depends_on:
+      - demo-debezium-kafka
+
   demo-debezium-kafka:
     image: confluentinc/cp-kafka:latest
     container_name: demo-debezium-kafka
     ports:
-      - "9092:9092"
+      - "9092:9092"     # Internal (Docker <-> Kafka)
+      - "9093:9093"     # External (Host <-> Kafka)
     environment:
+      KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: demo-debezium-zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://demo-debezium-kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://demo-debezium-kafka:9092,EXTERNAL://localhost:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     depends_on:
       - demo-debezium-zookeeper
