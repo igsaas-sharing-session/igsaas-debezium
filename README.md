@@ -1,4 +1,4 @@
-# Debezium with PostgreSQL Redis and Spring Boot
+# Debezium with PostgreSQL Redis and Spring Boot Demo
 
 This project demonstrates how to set up **Change Data Capture (CDC)** with **Debezium** to capture changes in a PostgreSQL database and consume these changes in a Spring Boot application. The captured changes are then stored in **Redis** for quick access.
 
